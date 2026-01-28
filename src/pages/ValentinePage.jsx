@@ -85,7 +85,7 @@ export default function ValentinePage() {
               <motion.button
                 whileHover={{ scale: 1.05, backgroundColor: "#FF2D75" }}
                 className="px-14 py-3 border border-pink-500/50 text-white rounded-full text-[10px] font-black tracking-[0.3em] uppercase transition-all shadow-[0_0_20px_rgba(255,45,117,0.2)]"
-                onClick={() => alert("Yay! ❤️")}
+                onClick={() => alert("Perfect! ❤️")}
               >
                 Yes
               </motion.button>
