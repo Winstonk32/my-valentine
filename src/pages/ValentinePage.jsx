@@ -5,29 +5,36 @@ export default function ValentinePage() {
   const [isRevealed, setIsRevealed] = useState(false);
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
 
+  // --- CONFIGURATION ---
+  // IMPORTANT: No '+', no '00', and no '0' before the area code.
+  // Example for UK: "447123456789" | Example for USA: "18001234567"
+  const phoneNumber = "YOUR_NUMBER_HERE"; 
+  const message = encodeURIComponent("YES! I will be your Valentine! ❤️✨");
+
+  const handleYes = () => {
+    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+    
+    // This method is the most robust for mobile browsers to trigger the app
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
+  };
+
   const moveButton = () => {
-    const x = Math.random() * 250 - 125;
-    const y = Math.random() * 250 - 125;
+    // Keeps the "No" button escaping within a reasonable range
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
     setNoPos({ x, y });
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#120C1F] text-white px-6 overflow-hidden">
       
-      {/* Background: Subtle Heart Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <motion.span
-            key={i}
-            initial={{ y: "100vh", opacity: 0 }}
-            animate={{ y: "-10vh", opacity: [0, 0.2, 0], x: Math.random() * 100 + "vw" }}
-            transition={{ duration: 10 + Math.random() * 5, repeat: Infinity, ease: "linear" }}
-            className="absolute text-pink-500/30 text-xs"
-          >
-            ♥
-          </motion.span>
-        ))}
-      </div>
+      {/* Background Glows */}
+      <div className="absolute w-[600px] h-[600px] bg-pink-900/10 rounded-full blur-[120px] -top-20 -left-20 pointer-events-none" />
+      <div className="absolute w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] -bottom-20 -right-20 pointer-events-none" />
 
       <AnimatePresence mode="wait">
         {!isRevealed ? (
@@ -39,19 +46,18 @@ export default function ValentinePage() {
             className="z-10 flex flex-col items-center cursor-pointer"
             onClick={() => setIsRevealed(true)}
           >
-            {/* The Main "Call to Action" Icon */}
+            {/* Pulsing Start Icon */}
             <motion.div
               animate={{ 
-                scale: [1, 1.2, 1],
-                boxShadow: ["0 0 0px rgba(255,45,117,0)", "0 0 20px rgba(255,45,117,0.4)", "0 0 0px rgba(255,45,117,0)"] 
+                scale: [1, 1.1, 1],
+                boxShadow: ["0 0 0px rgba(255,45,117,0)", "0 0 30px rgba(255,45,117,0.3)", "0 0 0px rgba(255,45,117,0)"] 
               }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-20 h-20 rounded-full border border-pink-500/30 flex items-center justify-center mb-6 bg-pink-500/5 transition-colors hover:bg-pink-500/20"
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-24 h-24 rounded-full border border-pink-500/30 flex items-center justify-center mb-6 bg-pink-500/5 transition-all hover:bg-pink-500/20"
             >
-              <span className="text-3xl text-pink-400">✨</span>
+              <span className="text-4xl text-pink-400">✨</span>
             </motion.div>
-
-            {/* Clear, Minimalist Instruction */}
+            
             <motion.p 
               className="text-[10px] uppercase tracking-[0.8em] text-white/40 font-bold"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
@@ -68,10 +74,11 @@ export default function ValentinePage() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center max-w-xl w-full z-10 text-center"
           >
+            {/* The Floating Flower */}
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="mb-8 text-5xl drop-shadow-[0_0_10px_rgba(255,45,117,0.5)]"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="mb-8 text-6xl drop-shadow-[0_0_15px_rgba(255,45,117,0.4)]"
             >
               🌸
             </motion.div>
@@ -82,18 +89,28 @@ export default function ValentinePage() {
             </h1>
 
             <div className="flex flex-col sm:flex-row gap-12 items-center justify-center w-full">
+              {/* YES BUTTON */}
               <motion.button
-                whileHover={{ scale: 1.05, backgroundColor: "#FF2D75" }}
-                className="px-14 py-3 border border-pink-500/50 text-white rounded-full text-[10px] font-black tracking-[0.3em] uppercase transition-all shadow-[0_0_20px_rgba(255,45,117,0.2)]"
-                onClick={() => alert("Perfect! ❤️")}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(255, 45, 117, 0.5)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleYes}
+                className="px-16 py-5 bg-white text-[#120C1F] rounded-full text-[12px] font-black tracking-[0.4em] uppercase transition-all shadow-2xl relative overflow-hidden group"
               >
-                Yes
+                <span className="relative z-10">Yes</span>
+                {/* Subtle shine sweep */}
+                <motion.div 
+                  animate={{ x: ['-100%', '200%'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-pink-500/10 to-transparent skew-x-12"
+                />
               </motion.button>
 
+              {/* NO BUTTON */}
               <motion.button
                 animate={{ x: noPos.x, y: noPos.y }}
                 onMouseEnter={moveButton}
-                className="text-[9px] uppercase tracking-[0.4em] text-white/20 hover:text-white/40"
+                transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                className="text-[10px] uppercase tracking-[0.4em] text-white/20 hover:text-white/40 px-4 py-2"
               >
                 No
               </motion.button>
@@ -102,7 +119,8 @@ export default function ValentinePage() {
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-12 text-[8px] tracking-[1.2em] text-white/10 uppercase font-bold">
+      {/* Footer Details */}
+      <div className="absolute bottom-12 text-[8px] tracking-[1.5em] text-white/10 uppercase font-black">
         Forever • 2026
       </div>
     </div>
