@@ -5,9 +5,7 @@ export default function ValentinePage() {
   const [isRevealed, setIsRevealed] = useState(false);
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
 
-  // --- CONFIGURATION ---
-  // IMPORTANT: No '+', no '00', and no '0' before the area code.
-  // Example for UK: "447123456789" | Example for USA: "18001234567"
+  
   const phoneNumber = "254794744770"; 
   const message = encodeURIComponent("YES! I will be your Valentine! ❤️✨");
 
