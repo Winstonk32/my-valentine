@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import EnvelopePage from "./pages/EnvelopePage";
@@ -10,12 +10,30 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
+  // Pre-load the audio when the app mounts
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+    }
+  }, []);
+
   const startMusic = () => {
-    if (audioRef.current && !isPlaying) {
-      // Set volume to 50% so it's not too loud
+    if (audioRef.current) {
       audioRef.current.volume = 0.5;
-      audioRef.current.play().catch(err => console.error("Playback failed:", err));
-      setIsPlaying(true);
+      
+      // Use the play promise to handle browsers that delay playback
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            console.log("Music started instantly");
+          })
+          .catch((error) => {
+            console.log("Playback interaction required", error);
+          });
+      }
     }
   };
 
@@ -28,17 +46,22 @@ function App() {
 
   return (
     <Router>
-      {/* FIXED PATH: Removed 'my-valentine/public' */}
-      <audio ref={audioRef} src="/music/song.mp3" loop />
+      {/* PRELOAD="AUTO" is the key here. 
+          It tells the browser to download the song immediately 
+      */}
+      <audio 
+        ref={audioRef} 
+        src="/music/song2.mp3" 
+        preload="auto" 
+        loop 
+      />
 
       <Routes>
-        {/* Pass startMusic only to the first page (Envelope) */}
         <Route path="/" element={<EnvelopePage startMusic={startMusic} />} />
         <Route path="/feelings" element={<FeelingsPage />} />
         <Route path="/valentine" element={<ValentinePage />} />
       </Routes>
 
-      {/* Floating Mute Toggle */}
       <AnimatePresence>
         {isPlaying && (
           <motion.button
